@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>On-Chain Tutoring Service</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+        text-align: center;
+      }
+
+      .container {
+        margin: 20px auto;
+        padding: 20px;
+        max-width: 600px;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      button {
+        padding: 10px 20px;
+        margin: 10px;
+        cursor: pointer;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      input[type="text"],
+      input[type="number"] {
+        padding: 8px;
+        margin: 10px 0;
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      h2 {
+        margin-top: 30px;
+        font-size: 1.2em;
+      }
+
+      #statusMessage {
+        margin-top: 20px;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #4caf50;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>On-Chain Tutoring Service</h1>
+
+      <!-- Connect MetaMask Button -->
+      <button id="connectWalletButton">Connect MetaMask</button>
+
+      <!-- Book a Session -->
+      <h2>Book a Tutoring Session</h2>
+      <label for="tutorAddress">Tutor Address:</label>
+      <input
+        type="text"
+        id="tutorAddress"
+        placeholder="Enter Tutor's Ethereum Address"
+      />
+      <label for="sessionFee">Session Fee (in Tokens):</label>
+      <input type="number" id="sessionFee" placeholder="Enter Session Fee" />
+      <button id="bookSessionButton">Book Session</button>
+
+      <!-- Complete Session -->
+      <h2>Complete a Session</h2>
+      <label for="completeSessionId">Session ID:</label>
+      <input
+        type="number"
+        id="completeSessionId"
+        placeholder="Enter Session ID"
+      />
+      <button id="completeSessionButton">Complete Session</button>
+
+      <!-- Refund a Session -->
+      <h2>Refund a Session</h2>
+      <label for="refundSessionId">Session ID:</label>
+      <input
+        type="number"
+        id="refundSessionId"
+        placeholder="Enter Session ID"
+      />
+      <button id="refundSessionButton">Refund Session</button>
+
+      <!-- Display Status Messages -->
+      <div id="statusMessage"></div>
+    </div>
+
+    <!-- CDN for Web3.js -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.6.1/dist/web3.min.js"></script>
+    <script>
+      // Declare Web3 and contract variables
+      let web3;
+      let contract;
+      let userAddress;
+
+      // Contract details
+      const contractAddress = "0xaD350208b98c338846634728f88d8dC5b5F0067d";
+      const contractABI = [
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "balanceOf",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "recipient",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "transfer",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ];
+
+      window.onload = function () {
+        // Set up web3 and contract when the page loads
+        if (typeof window.ethereum !== "undefined") {
+          web3 = new Web3(window.ethereum);
+          initializeApp();
+        } else {
+          alert("Please install MetaMask to use this app.");
+        }
+      };
+
+      // Initialize Web3 and the contract
+      async function initializeApp() {
+        // Request account access if needed
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+        userAddress = await web3.eth.getCoinbase();
+        contract = new web3.eth.Contract(contractABI, contractAddress);
+
+        // Set up event listeners
+        document.getElementById("connectWalletButton").onclick = connectWallet;
+        document.getElementById("bookSessionButton").onclick = bookSession;
+        document.getElementById("completeSessionButton").onclick =
+          completeSession;
+        document.getElementById("refundSessionButton").onclick = refundSession;
+      }
+
+      // Connect MetaMask wallet
+      async function connectWallet() {
+        const accounts = await web3.eth.requestAccounts();
+        userAddress = accounts[0];
+        document.getElementById(
+          "connectWalletButton"
+        ).textContent = `Connected: ${userAddress}`;
+      }
+
+      // Book a session
+      async function bookSession() {
+        const tutorAddress = document.getElementById("tutorAddress").value;
+        const sessionFee = document.getElementById("sessionFee").value;
+
+        if (!web3.utils.isAddress(tutorAddress)) {
+          alert("Invalid Tutor Address");
+          return;
+        }
+
+        const deposit = sessionFee / 2;
+        const amountInTokens = web3.utils.toWei(sessionFee, "ether"); // Assuming the payment token is in Ether
+
+        try {
+          await contract.methods
+            .bookSession(tutorAddress, amountInTokens)
+            .send({ from: userAddress });
+          displayStatus("Session booked successfully!");
+        } catch (error) {
+          console.error(error);
+          displayStatus("Error booking session");
+        }
+      }
+
+      // Complete a session
+      async function completeSession() {
+        const sessionId = document.getElementById("completeSessionId").value;
+
+        try {
+          await contract.methods
+            .completeSession(sessionId)
+            .send({ from: userAddress })

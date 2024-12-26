@@ -1,0 +1,228 @@
+{
+	"compiler": {
+		"version": "0.8.26+commit.8a97fa7a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_paymentToken",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "student",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "tutor",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "sessionFee",
+						"type": "uint256"
+					}
+				],
+				"name": "SessionBooked",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					}
+				],
+				"name": "SessionCompleted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					}
+				],
+				"name": "SessionRefunded",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tutor",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "sessionFee",
+						"type": "uint256"
+					}
+				],
+				"name": "bookSession",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					}
+				],
+				"name": "completeSession",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "paymentToken",
+				"outputs": [
+					{
+						"internalType": "contract IERC20",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					}
+				],
+				"name": "refundSession",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "sessionIdCounter",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "sessions",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "tutor",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "student",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "sessionFee",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "deposit",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isCompleted",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "isRefunded",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"project-42/contracts/contract.sol": "OnChainTutoring"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"project-42/contracts/contract.sol": {
+			"keccak256": "0x50964a18b3d0c04923216a088560e99d843829e2b38cf0fb5fcfa6453449f23b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://344ecdbc43b556bf7b567bd05cdf4c522a0220d8a620aab6e7b1003adb0268f1",
+				"dweb:/ipfs/QmRktVn5EzVXYoKxrrD1VNbHCt7wueVh1mzZxnZcFpqGvE"
+			]
+		}
+	},
+	"version": 1
+}
